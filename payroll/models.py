@@ -36,17 +36,20 @@ class SluggedModel(models.Model):
 
 
 class Employer(SluggedModel):
-    name = models.CharField(max_length=255)
     parent = models.ForeignKey('self',
                                null=True,
                                on_delete=models.CASCADE,
                                related_name='departments')
 
     def __str__(self):
-        name = self.name
+        try:
+            name = self.names.get(preferred=True)
 
-        if self.parent and self.parent.name.lower() not in self.name.lower():
-            name = '{} {}'.format(self.parent, self.name)
+        except EmployerName.DoesNotExist:
+            name = self.names.first()
+
+        if self.parent and str(self.parent).lower() not in name:
+            name = '{} {}'.format(str(self.parent), name)
 
         return titlecase(name.lower())
 
@@ -56,6 +59,14 @@ class Employer(SluggedModel):
         Return True if employer has parent, False otherwise.
         '''
         return bool(self.parent)
+
+
+class EmployerName(models.Model):
+    name = models.CharField(max_length=255)
+    employer = models.ForeignKey('Employer',
+                                 on_delete=models.CASCADE,
+                                 related_name='names')
+    preferred = models.BooleanField(default=False)
 
 
 class Person(SluggedModel):
