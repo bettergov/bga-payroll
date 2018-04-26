@@ -90,6 +90,13 @@ class Uploads(ListView):
         return Upload.objects.filter(standardized_file__isnull=False)\
                              .order_by('-created_at')
 
+    def get_context_data(self):
+        context = super().get_context_data()
+
+        context['upload_ids'] = [u.id for u in context['uploads']]
+
+        return context
+
 
 class Review(DetailView):
     template_name = 'data_import/review.html'

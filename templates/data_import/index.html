@@ -45,5 +45,22 @@ Uploads
 {% endblock %}
 
 {% block extra_js %}
+<script type="text/javascript">
+    var stepSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/uploads/');
 
+    stepSocket.onmessage = function(e) {
+        // receive messages sent to channel
+        var data = JSON.parse(e.data);
+        console.log(data);
+    };
+
+    $(document).click(function() {
+        // send upload ids to consumer for processing statuses
+        stepSocket.send(JSON.stringify({
+            'upload_ids': {{ upload_ids }},
+        }));
+    })
+</script>
 {% endblock %}

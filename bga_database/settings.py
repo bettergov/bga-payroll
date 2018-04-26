@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'data_import',
     'debug_toolbar',
     'django.contrib.postgres',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -111,8 +112,10 @@ STATIC_URL = '/static/'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "bga_database", "static"),
+    os.path.join(BASE_DIR, 'bga_database', 'static'),
 )
+
+ASGI_APPLICATION = 'bga_database.routing.application'
 
 # Remote storage options
 
